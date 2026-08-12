@@ -3,70 +3,76 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GameRig Pro — Pakistan's PC Hardware Hub</title>
+    <title>GameRig Pro — Pakistan's Ultimate Hardware Tool</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         :root {
-            --bg: #030712;
-            --card: rgba(17, 24, 39, 0.7);
+            --bg: #020617;
+            --card: rgba(15, 23, 42, 0.8);
             --accent: #22d3ee;
-            --accent-dim: rgba(34, 211, 238, 0.1);
-            --text: #f9fafb;
-            --text-dim: #9ca3af;
+            --text: #f8fafc;
+            --text-dim: #94a3b8;
             --success: #10b981;
+            --warning: #f59e0b;
             --danger: #ef4444;
-            --grad: linear-gradient(135deg, #22d3ee, #818cf8);
+            --border: rgba(255, 255, 255, 0.1);
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
         .wrap { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
 
-        /* Animations */
-        @keyframes slideIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-        .animate { animation: slideIn 0.5s ease-out forwards; }
-
         /* Navigation */
-        nav { background: rgba(3, 7, 18, 0.8); backdrop-filter: blur(12px); padding: 20px 0; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid rgba(255,255,255,0.05); }
+        nav { background: rgba(2, 6, 23, 0.8); backdrop-filter: blur(12px); padding: 15px 0; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--border); }
         .nav-flex { display: flex; justify-content: space-between; align-items: center; }
         .logo { font-weight: 800; font-size: 1.5rem; text-decoration: none; color: white; letter-spacing: -1px; }
         .logo span { color: var(--accent); }
-        .nav-links { display: flex; gap: 20px; }
-        .nav-links a { color: var(--text-dim); text-decoration: none; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: 0.2s; }
-        .nav-links a:hover, .nav-links a.active { color: var(--accent); }
+        .nav-links a { color: var(--text-dim); text-decoration: none; font-weight: 600; font-size: 0.85rem; margin-left: 20px; cursor: pointer; transition: 0.2s; }
+        .nav-links a:hover { color: var(--accent); }
 
         /* Sections */
-        section { padding: 60px 0; display: none; }
-        section.active { display: block; }
+        section { padding: 40px 0; display: none; }
+        section.active { display: block; animation: fadeIn 0.4s ease; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Search Bar */
-        .search-container { position: relative; max-width: 500px; margin: 0 auto 40px; }
-        .search-bar { width: 100%; padding: 15px 25px; border-radius: 50px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: white; outline: none; transition: 0.3s; }
-        .search-bar:focus { border-color: var(--accent); box-shadow: 0 0 20px var(--accent-dim); }
+        /* Search Header */
+        .search-hero { text-align: center; padding: 60px 0; background: radial-gradient(circle at center, #1e1b4b 0%, var(--bg) 100%); }
+        .search-container { position: relative; max-width: 600px; margin: 20px auto; }
+        .search-input { width: 100%; padding: 18px 30px; border-radius: 50px; background: rgba(255,255,255,0.05); border: 1px solid var(--border); color: white; font-size: 1.1rem; outline: none; }
+        .search-input:focus { border-color: var(--accent); box-shadow: 0 0 20px rgba(34, 211, 238, 0.2); }
 
-        /* Components */
-        .glass-card { background: var(--card); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.05); border-radius: 24px; padding: 30px; margin-bottom: 20px; }
-        .grid-3 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; }
+        /* Dashboard Cards */
+        .grid-main { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .hw-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 25px; transition: 0.3s; cursor: pointer; position: relative; }
+        .hw-card:hover { transform: translateY(-5px); border-color: var(--accent); background: rgba(30, 41, 59, 1); }
+        .tag { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; padding: 4px 10px; border-radius: 6px; display: inline-block; margin-bottom: 10px; }
+        .tag-new { background: rgba(34, 211, 238, 0.1); color: var(--accent); }
+        .tag-used { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+        .deal-badge { position: absolute; top: 15px; right: 15px; font-weight: 800; font-size: 0.7rem; }
         
-        .btn { background: var(--grad); color: #000; padding: 12px 25px; border-radius: 12px; font-weight: 700; border: none; cursor: pointer; transition: 0.3s; text-align: center; }
-        .btn:hover { transform: translateY(-2px); box-shadow: 0 10px 20px var(--accent-dim); }
+        .price { font-size: 1.5rem; font-weight: 800; color: var(--accent); }
+        .value-score { display: flex; align-items: center; gap: 5px; font-size: 0.8rem; font-weight: 700; margin-top: 10px; }
+        .score-bar { height: 6px; background: #334155; border-radius: 3px; flex-grow: 1; overflow: hidden; }
+        .score-fill { height: 100%; background: var(--accent); }
 
-        /* Price Tracker Table */
-        table { width: 100%; border-collapse: collapse; }
-        th { text-align: left; padding: 15px; color: var(--text-dim); font-size: 0.75rem; text-transform: uppercase; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        td { padding: 15px; border-bottom: 1px solid rgba(255,255,255,0.05); }
-        .badge { padding: 4px 8px; border-radius: 6px; font-size: 0.7rem; font-weight: 800; }
-        .badge-new { background: var(--accent-dim); color: var(--accent); }
-        .badge-used { background: rgba(245, 158, 11, 0.1); color: #f59e0b; }
-        .score { font-weight: 800; color: var(--success); }
+        /* Modal Popup */
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(8px); z-index: 2000; padding: 20px; overflow-y: auto; }
+        .modal-content { background: #0f172a; max-width: 700px; margin: 40px auto; border-radius: 30px; padding: 40px; border: 1px solid var(--border); position: relative; }
+        .close-modal { position: absolute; top: 20px; right: 20px; font-size: 1.5rem; cursor: pointer; }
 
-        /* Compatibility Checker */
-        .comp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-        .status-msg { margin-top: 20px; padding: 15px; border-radius: 12px; display: none; font-weight: 700; text-align: center; }
+        /* PKR Tracker Styling */
+        .tracker-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        .tracker-table th { text-align: left; padding: 15px; color: var(--text-dim); border-bottom: 1px solid var(--border); font-size: 0.8rem; }
+        .tracker-table td { padding: 15px; border-bottom: 1px solid var(--border); }
+        .trend-up { color: var(--danger); font-size: 0.8rem; }
+        .trend-down { color: var(--success); font-size: 0.8rem; }
 
-        /* Best GPU Under X */
-        .budget-box { text-align: center; max-width: 600px; margin: 0 auto 30px; }
-        .gpu-result-card { background: var(--grad); color: black; padding: 30px; border-radius: 20px; text-align: center; display: none; }
+        /* Builder Styling */
+        .builder-header { text-align: center; margin-bottom: 40px; }
+        .builder-btn { background: var(--accent); color: black; padding: 15px 30px; border-radius: 12px; font-weight: 800; cursor: pointer; border: none; margin-top: 20px; width: 100%; }
+
+        .comp-status { padding: 20px; border-radius: 15px; margin-top: 20px; text-align: center; font-weight: 800; display: none; }
     </style>
 </head>
 <body>
@@ -75,101 +81,118 @@
     <div class="wrap nav-flex">
         <a href="#" class="logo" onclick="route('home')">GAME<span>RIG</span></a>
         <div class="nav-links">
-            <a onclick="route('tracker')">PKR Tracker</a>
+            <a onclick="route('home')">Database</a>
+            <a onclick="route('tracker')">PKR Prices</a>
             <a onclick="route('builder')">Build Gen</a>
-            <a onclick="route('compare')">GPU Battle</a>
-            <a onclick="route('compatibility')">Compatibility</a>
+            <a onclick="route('checker')">Compatibility</a>
         </div>
     </div>
 </nav>
 
-<main class="wrap">
-
-    <!-- HOME / SEARCH -->
-    <section id="home" class="active animate">
-        <h1 style="text-align:center; font-size: 3.5rem; margin-top: 40px;">Pakistan's Hardware <span style="color:var(--accent)">Database</span></h1>
-        <p style="text-align:center; color:var(--text-dim); margin-bottom: 40px;">Live PKR Prices, Compatibility Checks, and FPS Benchmarks.</p>
-        
-        <div class="search-container">
-            <input type="text" class="search-bar" placeholder="Search GPU (e.g. RTX 3060)..." onkeyup="searchGPU(this.value)">
+<main>
+    <!-- HOME / UNIVERSAL SEARCH -->
+    <section id="home" class="active">
+        <div class="search-hero">
+            <div class="wrap">
+                <h1>Universal <span style="color:var(--accent)">Hardware</span> Search</h1>
+                <p style="color:var(--text-dim)">Compare GPUs, CPUs, and real-time Pakistani market trends.</p>
+                <div class="search-container">
+                    <input type="text" class="search-input" id="globalSearch" placeholder="Try 'RTX 3060' or 'i5 12400F'..." onkeyup="handleSearch()">
+                </div>
+                <div id="trending-tags" style="margin-top:15px; font-size:0.8rem; color:var(--text-dim)">
+                    Trending: <span style="color:var(--accent); cursor:pointer" onclick="handleSearch('RTX 3060')">RTX 3060</span>, 
+                    <span style="color:var(--accent); cursor:pointer" onclick="handleSearch('RX 6600')">RX 6600</span>, 
+                    <span style="color:var(--accent); cursor:pointer" onclick="handleSearch('12400F')">i5-12400F</span>
+                </div>
+            </div>
         </div>
-
-        <div id="search-results" class="grid-3"></div>
-
-        <div class="budget-box glass-card">
-            <h3>Find Best GPU for Your Budget</h3>
-            <p style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 20px;">Enter your budget in PKR to find the highest value card.</p>
-            <input type="number" id="budget-input" placeholder="Enter PKR (e.g. 80000)" style="margin-bottom: 15px;">
-            <button class="btn" onclick="findBestGPU()">Find Best Value</button>
-            <div id="best-gpu-res" class="gpu-result-card" style="margin-top: 20px;"></div>
-        </div>
-    </section>
-
-    <!-- TRACKER -->
-    <section id="tracker" class="animate">
-        <h2>Live PKR Price Tracker</h2>
-        <div class="glass-card">
-            <table>
-                <thead>
-                    <tr><th>Component</th><th>Market Price</th><th>Condition</th><th>Deal Score</th><th>Trend</th></tr>
-                </thead>
-                <tbody id="tracker-body"></tbody>
-            </table>
+        <div class="wrap">
+            <h3 style="margin-bottom:20px;">Top Performance Picks</h3>
+            <div id="resultsGrid" class="grid-main"></div>
         </div>
     </section>
 
-    <!-- BUILDER -->
-    <section id="builder" class="animate">
-        <h2>Smart Build Generator</h2>
-        <div class="glass-card">
-            <select id="build-budget" onchange="buildPC()">
-                <option value="">Select Budget Tier...</option>
-                <option value="low">Under 100k (e-Sports)</option>
-                <option value="mid">150k - 250k (1440p King)</option>
-                <option value="high">400k+ (4K Content Creator)</option>
-            </select>
-            <div id="build-res" class="grid-3" style="margin-top: 30px;"></div>
+    <!-- PKR TRACKER -->
+    <section id="tracker">
+        <div class="wrap">
+            <h2>PKR Market Price Tracker</h2>
+            <p style="color:var(--text-dim); margin-bottom: 20px;">Last Sync: <span id="sync-time"></span> (Islamabad Market Avg)</p>
+            <div class="hw-card" style="width:100%; padding:0;">
+                <table class="tracker-table">
+                    <thead>
+                        <tr><th>Component</th><th>PKR Price</th><th>Condition</th><th>Deal Score</th><th>30D Trend</th></tr>
+                    </thead>
+                    <tbody id="fullTrackerBody"></tbody>
+                </table>
+            </div>
         </div>
     </section>
 
-    <!-- COMPATIBILITY -->
-    <section id="compatibility" class="animate">
-        <h2>PC Compatibility Checker</h2>
-        <div class="glass-card">
-            <div class="comp-grid">
-                <div>
+    <!-- BUILD GENERATOR -->
+    <section id="builder">
+        <div class="wrap">
+            <div class="builder-header">
+                <h2>AI Build Generator</h2>
+                <p>Select your PKR budget to generate a perfectly balanced system.</p>
+            </div>
+            <div class="glass-card" style="max-width: 600px; margin: 0 auto; background: var(--card); padding: 30px; border-radius: 20px;">
+                <label style="display:block; margin-bottom:10px;">Your Budget (PKR)</label>
+                <select id="budgetSelect" class="search-input" style="border-radius:12px;">
+                    <option value="90000">Rs. 90,000 (1080p Value)</option>
+                    <option value="175000">Rs. 175,000 (1440p Competitive)</option>
+                    <option value="350000">Rs. 350,000 (4K Extreme)</option>
+                </select>
+                <button class="builder-btn" onclick="generateBuild()">Generate PC Build</button>
+            </div>
+            <div id="buildOutput" class="grid-main" style="margin-top:40px;"></div>
+        </div>
+    </section>
+
+    <!-- COMPATIBILITY CHECKER -->
+    <section id="checker">
+        <div class="wrap">
+            <h2>Smart Compatibility Check</h2>
+            <div class="grid-main" style="margin-top:30px;">
+                <div class="hw-card">
                     <label>Select CPU</label>
-                    <select id="comp-cpu">
-                        <option value="AM4">Ryzen 5 5600 (AM4)</option>
-                        <option value="AM5">Ryzen 7 7700 (AM5)</option>
-                        <option value="LGA1700">Intel i5-12400 (LGA1700)</option>
+                    <select id="checkCPU" class="search-input" style="margin-top:10px; font-size: 0.9rem;">
+                        <option value="AM4|DDR4">Ryzen 5 5600 (AM4)</option>
+                        <option value="AM5|DDR5">Ryzen 7 7800X3D (AM5)</option>
+                        <option value="LGA1700|DDR4">Core i5-12400F (LGA1700)</option>
                     </select>
                 </div>
-                <div>
+                <div class="hw-card">
                     <label>Select Motherboard</label>
-                    <select id="comp-mobo">
-                        <option value="AM4">B450 / B550 (AM4)</option>
-                        <option value="AM5">B650 / X670 (AM5)</option>
-                        <option value="LGA1700">H610 / B660 (LGA1700)</option>
+                    <select id="checkMobo" class="search-input" style="margin-top:10px; font-size: 0.9rem;">
+                        <option value="AM4|DDR4">B550 / A520 (AM4)</option>
+                        <option value="AM5|DDR5">B650 / X670 (AM5)</option>
+                        <option value="LGA1700|DDR4">H610 / B660 (LGA1700)</option>
+                        <option value="LGA1700|DDR5">Z790 (LGA1700 DDR5)</option>
                     </select>
                 </div>
             </div>
-            <button class="btn" style="width:100%; margin-top: 20px;" onclick="checkComp()">Check Compatibility</button>
-            <div id="comp-msg" class="status-msg"></div>
+            <div id="compStatus" class="comp-status"></div>
         </div>
     </section>
-
 </main>
 
+<!-- MODAL FOR HARDWARE DETAILS -->
+<div id="hwModal" class="modal">
+    <div class="modal-content">
+        <span class="close-modal" onclick="closeModal()">&times;</span>
+        <div id="modalBody"></div>
+    </div>
+</div>
+
 <script>
-    // --- MINI DATABASE ---
-    const gpuData = [
-        { name: "RTX 4060", price: 98000, condition: "New", score: 85, trend: "Stable", perf: 70 },
-        { name: "RTX 3060 12GB", price: 82000, condition: "Used", score: 92, trend: "Down", perf: 60 },
-        { name: "GTX 1660 Super", price: 46000, condition: "Used", score: 88, trend: "Stable", perf: 35 },
-        { name: "RX 6600", price: 62000, condition: "Used", score: 95, trend: "Down", perf: 55 },
-        { name: "RTX 4070 Super", price: 185000, condition: "New", score: 80, trend: "Up", perf: 100 },
-        { name: "RX 580 8GB", price: 28000, condition: "Used", score: 98, trend: "Stable", perf: 25 }
+    // --- DATABASE ---
+    const hardware = [
+        { name: "RTX 4060 8GB", type: "GPU", price: 96000, condition: "New", score: 88, trend: -2, vram: "8GB GDDR6", pwr: "115W", socket: "PCIe 4.0", value: 9 },
+        { name: "RTX 3060 12GB", type: "GPU", price: 78000, condition: "Used", score: 95, trend: -5, vram: "12GB GDDR6", pwr: "170W", socket: "PCIe 4.0", value: 10 },
+        { name: "RX 6600 8GB", type: "GPU", price: 58000, condition: "Used", score: 98, trend: -3, vram: "8GB GDDR6", pwr: "132W", socket: "PCIe 4.0", value: 10 },
+        { name: "Core i5-12400F", type: "CPU", price: 34000, condition: "New", score: 90, trend: 0, socket: "LGA1700", cores: "6/12", value: 9 },
+        { name: "Ryzen 5 5600", type: "CPU", price: 28500, condition: "New", score: 94, trend: -1, socket: "AM4", cores: "6/12", value: 10 },
+        { name: "RTX 4070 Super", type: "GPU", price: 185000, condition: "New", score: 82, trend: 2, vram: "12GB GDDR6X", pwr: "220W", socket: "PCIe 4.0", value: 8 }
     ];
 
     // --- ROUTING ---
@@ -177,83 +200,105 @@
         document.querySelectorAll('section').forEach(s => s.classList.remove('active'));
         document.getElementById(id).classList.add('active');
         if(id === 'tracker') renderTracker();
+        window.scrollTo(0,0);
     }
 
-    // --- SEARCH ---
-    function searchGPU(query) {
-        const results = gpuData.filter(g => g.name.toLowerCase().includes(query.toLowerCase()));
-        const container = document.getElementById('search-results');
-        container.innerHTML = results.map(g => `
-            <div class="glass-card">
-                <h3>${g.name}</h3>
-                <p>Est. PKR: <b>${g.price.toLocaleString()}</b></p>
-                <div class="badge badge-new">${g.condition}</div>
+    // --- SEARCH LOGIC ---
+    function handleSearch(val) {
+        const query = val || document.getElementById('globalSearch').value.toLowerCase();
+        const results = hardware.filter(h => h.name.toLowerCase().includes(query));
+        renderCards(results, 'resultsGrid');
+    }
+
+    function renderCards(data, target) {
+        const grid = document.getElementById(target);
+        grid.innerHTML = data.map(h => `
+            <div class="hw-card" onclick="openModal('${h.name}')">
+                <span class="tag ${h.condition === 'New' ? 'tag-new' : 'tag-used'}">${h.condition}</span>
+                <span class="deal-badge" style="color:${h.score > 90 ? 'var(--success)' : 'var(--text-dim)'}">${h.score > 90 ? '🔥 GREAT DEAL' : ''}</span>
+                <h3 style="margin: 10px 0 5px;">${h.name}</h3>
+                <div class="price">Rs. ${h.price.toLocaleString()}</div>
+                <div class="value-score">
+                    <span>Value</span>
+                    <div class="score-bar"><div class="score-fill" style="width:${h.value * 10}%"></div></div>
+                    <span>${h.value}/10</span>
+                </div>
             </div>
         `).join('');
     }
 
-    // --- BEST VALUE LOGIC ---
-    function findBestGPU() {
-        const budget = document.getElementById('budget-input').value;
-        const affordable = gpuData.filter(g => g.price <= budget);
-        const best = affordable.sort((a,b) => b.score - a.score)[0];
-        const res = document.getElementById('best-gpu-res');
+    // --- MODAL LOGIC ---
+    function openModal(name) {
+        const item = hardware.find(h => h.name === name);
+        const modal = document.getElementById('hwModal');
+        const body = document.getElementById('modalBody');
         
-        if(best) {
-            res.style.display = "block";
-            res.innerHTML = `<h4>BEST DEAL: ${best.name}</h4><p>Value Score: ${best.score}/100</p><p>Price: Rs. ${best.price.toLocaleString()}</p>`;
-        } else {
-            res.style.display = "block";
-            res.innerHTML = `No GPUs found in this budget.`;
-        }
+        body.innerHTML = `
+            <div class="tag tag-new">${item.type}</div>
+            <h1 style="font-size: 2.5rem; margin-bottom:10px;">${item.name}</h1>
+            <div class="price" style="font-size: 2rem; margin-bottom:20px;">Rs. ${item.price.toLocaleString()}</div>
+            
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:20px; margin-bottom:30px;">
+                <div class="hw-card">
+                    <p style="color:var(--text-dim)">Socket/Slot</p>
+                    <p><b>${item.socket}</b></p>
+                </div>
+                <div class="hw-card">
+                    <p style="color:var(--text-dim)">Estimated FPS Boost</p>
+                    <p><b>+${item.value * 5.5}% Avg</b></p>
+                </div>
+            </div>
+
+            <h3>Price Performance Analysis</h3>
+            <p style="margin-bottom:20px;">This ${item.type} is currently ranked <b style="color:var(--success)">#${11 - item.value}</b> in price-to-performance for the Pakistani market.</p>
+            <button class="builder-btn" onclick="closeModal()">Add to Comparison</button>
+        `;
+        modal.style.display = "block";
     }
 
-    // --- PRICE TRACKER RENDER ---
+    function closeModal() {
+        document.getElementById('hwModal').style.display = "none";
+    }
+
+    // --- TRACKER RENDER ---
     function renderTracker() {
-        const tbody = document.getElementById('tracker-body');
-        tbody.innerHTML = gpuData.map(g => `
+        const body = document.getElementById('fullTrackerBody');
+        body.innerHTML = hardware.map(h => `
             <tr>
-                <td><b>${g.name}</b></td>
-                <td>Rs. ${g.price.toLocaleString()}</td>
-                <td><span class="badge ${g.condition === 'New' ? 'badge-new' : 'badge-used'}">${g.condition}</span></td>
-                <td><span class="score">${g.score}</span></td>
-                <td style="color: ${g.trend === 'Down' ? 'var(--success)' : 'var(--danger)'}">${g.trend}</td>
+                <td><b>${h.name}</b></td>
+                <td class="price" style="font-size:1.1rem">Rs. ${h.price.toLocaleString()}</td>
+                <td><span class="tag ${h.condition === 'New' ? 'tag-new' : 'tag-used'}">${h.condition}</span></td>
+                <td><b style="color:var(--success)">${h.score}</b></td>
+                <td class="${h.trend <= 0 ? 'trend-down' : 'trend-up'}">
+                    ${h.trend <= 0 ? '▼' : '▲'} ${Math.abs(h.trend)}%
+                </td>
             </tr>
         `).join('');
+        document.getElementById('sync-time').innerText = new Date().toLocaleTimeString();
     }
 
     // --- COMPATIBILITY LOGIC ---
-    function checkComp() {
-        const cpu = document.getElementById('comp-cpu').value;
-        const mobo = document.getElementById('comp-mobo').value;
-        const msg = document.getElementById('comp-msg');
-        msg.style.display = "block";
-
-        if(cpu === mobo) {
-            msg.style.background = "rgba(16, 185, 129, 0.2)";
-            msg.style.color = "var(--success)";
-            msg.innerText = "COMPATIBLE: Both use the " + cpu + " Socket.";
+    function checkCompatibility() {
+        const cpuData = document.getElementById('checkCPU').value.split('|');
+        const moboData = document.getElementById('checkMobo').value.split('|');
+        const status = document.getElementById('compStatus');
+        
+        status.style.display = "block";
+        if(cpuData[0] === moboData[0] && cpuData[1] === moboData[1]) {
+            status.style.background = "rgba(16, 185, 129, 0.1)";
+            status.style.color = var(--success);
+            status.innerText = "✓ 100% COMPATIBLE: Socket and RAM Generation match.";
         } else {
-            msg.style.background = "rgba(239, 68, 68, 0.2)";
-            msg.style.color = "var(--danger)";
-            msg.innerText = "INCOMPATIBLE: " + cpu + " CPU cannot fit in " + mobo + " Motherboard.";
+            status.style.background = "rgba(239, 68, 68, 0.1)";
+            status.style.color = var(--danger);
+            status.innerText = "❌ INCOMPATIBLE: " + (cpuData[0] !== moboData[0] ? "Socket Mismatch" : "RAM Generation Mismatch (DDR4 vs DDR5)");
         }
     }
+    document.getElementById('checkCPU').onchange = checkCompatibility;
+    document.getElementById('checkMobo').onchange = checkCompatibility;
 
-    // --- BUILDER ---
-    function buildPC() {
-        const tier = document.getElementById('build-budget').value;
-        const res = document.getElementById('build-res');
-        const builds = {
-            low: [{p:"CPU", m:"Ryzen 5 3600"}, {p:"GPU", m:"GTX 1660S"}, {p:"Budget", m:"Rs. 95k"}],
-            mid: [{p:"CPU", m:"i5-12400F"}, {p:"GPU", m:"RTX 4060"}, {p:"Budget", m:"Rs. 180k"}],
-            high: [{p:"CPU", m:"Ryzen 7 7800X3D"}, {p:"GPU", m:"RTX 4080 Super"}, {p:"Budget", m:"Rs. 450k"}]
-        };
-        res.innerHTML = builds[tier].map(i => `<div class="glass-card"><h5>${i.p}</h5><p>${i.m}</p></div>`).join('');
-    }
-
-    // Initialize Home Search
-    searchGPU('');
+    // --- INITIALIZE ---
+    renderCards(hardware, 'resultsGrid');
 </script>
 
 </body>
