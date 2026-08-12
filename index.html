@@ -3,246 +3,233 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GameRig — The Ultimate Hardware Dashboard</title>
+    <title>GameRig Pro — Pakistan's Ultimate Hardware Suite</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #030712;
-            --card: rgba(17, 24, 39, 0.7);
+            --bg: #020617;
+            --card: rgba(15, 23, 42, 0.7);
             --accent: #22d3ee;
             --text: #f8fafc;
-            --text-dim: #9ca3af;
+            --text-dim: #94a3b8;
             --border: rgba(255, 255, 255, 0.08);
             --nvidia: #76b900;
             --amd: #ed1c24;
+            --intel: #0071c5;
         }
 
         * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Plus Jakarta Sans', sans-serif; }
         body { background: var(--bg); color: var(--text); line-height: 1.6; overflow-x: hidden; }
-        .wrap { max-width: 1200px; margin: 0 auto; padding: 0 20px; }
+        .wrap { max-width: 1300px; margin: 0 auto; padding: 0 20px; }
 
-        /* Modern Scrollbar */
-        ::-webkit-scrollbar { width: 8px; }
-        ::-webkit-scrollbar-track { background: var(--bg); }
-        ::-webkit-scrollbar-thumb { background: #1e293b; border-radius: 10px; }
+        /* Market Ticker */
+        .ticker-wrap { background: #0f172a; border-bottom: 1px solid var(--border); padding: 8px 0; overflow: hidden; white-space: nowrap; }
+        .ticker { display: inline-block; animation: marquee 30s linear infinite; font-size: 0.75rem; font-weight: 700; color: var(--accent); }
+        @keyframes marquee { 0% { transform: translateX(100%); } 100% { transform: translateX(-100%); } }
 
         /* Navigation */
-        nav { background: rgba(3, 7, 18, 0.8); backdrop-filter: blur(12px); padding: 15px 0; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--border); }
+        nav { background: rgba(2, 6, 23, 0.9); backdrop-filter: blur(15px); padding: 20px 0; position: sticky; top: 0; z-index: 1000; border-bottom: 1px solid var(--border); }
         .nav-flex { display: flex; justify-content: space-between; align-items: center; }
         .logo { font-weight: 800; font-size: 1.5rem; text-decoration: none; color: white; letter-spacing: -1px; }
         .logo span { color: var(--accent); }
 
-        /* Hero / Search */
-        .hero { padding: 80px 0 40px; text-align: center; background: radial-gradient(circle at top, #1e1b4b 0%, var(--bg) 100%); }
-        .search-container { position: relative; max-width: 700px; margin: 30px auto 0; }
-        .search-bar { width: 100%; padding: 20px 30px; border-radius: 50px; background: #0f172a; border: 1px solid var(--border); color: white; font-size: 1.1rem; outline: none; transition: 0.3s; }
-        .search-bar:focus { border-color: var(--accent); box-shadow: 0 0 25px rgba(34, 211, 238, 0.15); }
-
-        /* Grid Layout */
-        .dashboard-grid { display: grid; grid-template-columns: 2fr 1fr; gap: 30px; margin-top: 40px; }
-        @media (max-width: 992px) { .dashboard-grid { grid-template-columns: 1fr; } }
-
-        h2 { font-size: 1.8rem; margin-bottom: 20px; display: flex; align-items: center; gap: 10px; }
-        h2::before { content: ''; width: 4px; height: 24px; background: var(--accent); border-radius: 2px; }
-
-        /* GPU Cards */
-        .gpu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 20px; }
-        .card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 20px; transition: 0.3s; cursor: pointer; position: relative; overflow: hidden; }
-        .card:hover { transform: translateY(-5px); border-color: var(--accent); background: #111827; }
-        .brand-line { height: 3px; width: 40px; border-radius: 2px; margin-bottom: 12px; }
-        .brand-nvidia { background: var(--nvidia); }
-        .brand-amd { background: var(--amd); }
-        .price { font-size: 1.4rem; font-weight: 800; color: var(--accent); margin: 10px 0; }
-        .condition { font-size: 0.7rem; font-weight: 800; text-transform: uppercase; background: rgba(255,255,255,0.05); padding: 4px 8px; border-radius: 4px; color: var(--text-dim); }
+        /* Dashboard Layout */
+        .main-layout { display: grid; grid-template-columns: 1fr 350px; gap: 30px; margin-top: 30px; }
+        @media (max-width: 1024px) { .main-layout { grid-template-columns: 1fr; } }
 
         /* Sidebar Tools */
-        .tool-box { background: #0f172a; border: 1px solid var(--border); border-radius: 24px; padding: 25px; position: sticky; top: 100px; height: fit-content; }
-        .input-group { margin-bottom: 20px; }
-        label { display: block; font-size: 0.8rem; font-weight: 700; color: var(--accent); margin-bottom: 8px; text-transform: uppercase; }
-        select { width: 100%; padding: 12px; border-radius: 12px; background: #1e293b; border: 1px solid var(--border); color: white; font-size: 0.9rem; outline: none; }
-        select option { background: #0f172a; }
+        .sidebar { position: sticky; top: 100px; height: fit-content; }
+        .tool-card { background: var(--card); border: 1px solid var(--border); padding: 25px; border-radius: 24px; margin-bottom: 20px; backdrop-filter: blur(10px); }
+        
+        /* Hardware Cards */
+        .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 20px; }
+        .card { 
+            background: var(--card); border: 1px solid var(--border); padding: 25px; border-radius: 20px; 
+            transition: 0.3s; cursor: pointer; position: relative; overflow: hidden;
+        }
+        .card:hover { transform: translateY(-5px); border-color: var(--accent); box-shadow: 0 10px 30px -10px rgba(34, 211, 238, 0.2); }
+        .card::after { content: ''; position: absolute; top: 0; left: 0; width: 4px; height: 100%; opacity: 0.6; }
+        .card.nvidia::after { background: var(--nvidia); box-shadow: 0 0 15px var(--nvidia); }
+        .card.amd::after { background: var(--amd); box-shadow: 0 0 15px var(--amd); }
+        .card.intel::after { background: var(--intel); box-shadow: 0 0 15px var(--intel); }
 
-        .btn { width: 100%; padding: 14px; border-radius: 12px; background: var(--accent); color: black; border: none; font-weight: 800; cursor: pointer; transition: 0.3s; margin-top: 10px; }
-        .btn:hover { filter: brightness(1.1); transform: scale(1.02); }
-
-        #comp-result { margin-top: 20px; padding: 15px; border-radius: 12px; font-weight: 700; text-align: center; display: none; font-size: 0.85rem; }
+        /* Search */
+        .search-area { background: radial-gradient(circle at top right, #1e1b4b, var(--bg)); padding: 60px 0; border-radius: 30px; text-align: center; margin-bottom: 30px; }
+        .search-bar { width: 90%; max-width: 600px; padding: 18px 30px; border-radius: 50px; background: #0f172a; border: 1px solid var(--border); color: white; font-size: 1.1rem; outline: none; }
+        
+        /* Stats & UI */
+        .price { font-size: 1.6rem; font-weight: 800; color: var(--accent); margin: 10px 0; }
+        .tag { font-size: 0.65rem; font-weight: 800; text-transform: uppercase; padding: 4px 10px; border-radius: 6px; background: rgba(255,255,255,0.05); color: var(--text-dim); }
+        .status-pill { padding: 15px; border-radius: 12px; font-weight: 800; font-size: 0.8rem; margin-top: 15px; text-align: center; display: none; }
+        
+        select, input { width: 100%; padding: 12px; border-radius: 10px; background: #1e293b; border: 1px solid var(--border); color: white; margin-top: 5px; outline: none; }
+        .btn { width: 100%; padding: 14px; border-radius: 10px; background: var(--accent); color: black; border: none; font-weight: 800; cursor: pointer; margin-top: 15px; }
 
         /* Modal */
-        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); z-index: 2000; padding: 20px; }
-        .modal-content { background: #0f172a; max-width: 500px; margin: 80px auto; border-radius: 24px; padding: 40px; border: 1px solid var(--border); position: relative; }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); backdrop-filter: blur(10px); z-index: 2000; }
+        .modal-content { background: #0f172a; max-width: 500px; margin: 100px auto; border-radius: 24px; padding: 40px; border: 1px solid var(--border); position: relative; }
     </style>
 </head>
 <body>
 
+<div class="ticker-wrap">
+    <div class="ticker">
+        🔥 HOT DEALS: RTX 3060 12GB Prices dropping at Hafeez Center (Rs. 78k Avg) • 🚀 HYPE: RTX 5090 Blackwell pre-orders expected Q1 2025 • 💡 TIP: Pairing a GTX 1660S with i3-12100F is the current budget king for Pakistan • 📉 TREND: Used RX 580 stocks are high, prices stable at 25k.
+    </div>
+</div>
+
 <nav>
     <div class="wrap nav-flex">
         <a href="#" class="logo">GAME<span>RIG</span></a>
-        <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-dim);">PAKISTANI HARDWARE HUB</div>
+        <div style="font-size: 0.8rem; font-weight: 700; color: var(--text-dim);">HARDWARE INTELLIGENCE v2.0</div>
     </div>
 </nav>
 
-<section class="hero">
-    <div class="wrap">
-        <h1>Find Your <span style="color:var(--accent)">Ideal Upgrade.</span></h1>
-        <div class="search-container">
-            <input type="text" id="mainSearch" class="search-bar" placeholder="Search any GPU (e.g. 3060, RX 580, 5090)..." onkeyup="filterCards()">
-        </div>
-    </div>
-</section>
-
 <main class="wrap">
-    <div class="dashboard-grid">
+    
+    <div class="search-area">
+        <h1 style="margin-bottom: 15px;">Universal <span style="color:var(--accent)">Hardware</span> Finder</h1>
+        <input type="text" id="mainSearch" class="search-bar" placeholder="Search GPU or CPU (e.g. 3060, i5 12400, RX 580)..." onkeyup="filterAll()">
+    </div>
+
+    <div class="main-layout">
         
-        <!-- LEFT: GPU SHUFFLE GRID -->
-        <div class="content-area">
-            <h2>Hardware Database</h2>
-            <div id="gpuContainer" class="gpu-grid"></div>
+        <!-- LEFT: SHUFFLED LIST -->
+        <div class="content">
+            <h2 style="margin-bottom: 20px;">Market Database</h2>
+            <div id="hwGrid" class="grid"></div>
         </div>
 
         <!-- RIGHT: SIDEBAR TOOLS -->
         <div class="sidebar">
-            <div class="tool-box">
-                <h2>Quick Checker</h2>
-                <p style="font-size: 0.8rem; color: var(--text-dim); margin-bottom: 20px;">Instantly verify if your CPU & Motherboard match.</p>
-                
-                <div class="input-group">
-                    <label>Select CPU</label>
-                    <select id="cpuS">
-                        <optgroup label="Modern AMD">
-                            <option value="AM5">Ryzen 9000/7000 (AM5)</option>
-                            <option value="AM4">Ryzen 5000/3000/2000 (AM4)</option>
-                        </optgroup>
-                        <optgroup label="Older AMD">
-                            <option value="AM3">FX Series / Phenom (AM3+)</option>
-                            <option value="FM2">A-Series APUs (FM2+)</option>
-                        </optgroup>
-                        <optgroup label="Modern Intel">
-                            <option value="1700">Core 12th/13th/14th Gen (LGA 1700)</option>
-                            <option value="1200">Core 10th/11th Gen (LGA 1200)</option>
-                        </optgroup>
-                        <optgroup label="Mid/Legacy Intel">
-                            <option value="1151">Core 6th/7th/8th/9th Gen (LGA 1151)</option>
-                            <option value="1155">Core 2nd/3rd Gen (LGA 1155)</option>
-                            <option value="775">Core 2 Duo/Quad (LGA 775)</option>
-                        </optgroup>
+            <!-- COMPATIBILITY & BOTTLENECK -->
+            <div class="tool-card">
+                <h3 style="margin-bottom: 15px; font-size: 1rem;">Compatibility & PSU Tool</h3>
+                <label style="font-size: 0.7rem; font-weight: 800; color: var(--accent);">CHOOSE YOUR CPU</label>
+                <select id="cpuSelect">
+                    <option value="high">Core i9 / Ryzen 9 (High End)</option>
+                    <option value="mid" selected>Core i5 / Ryzen 5 (Mid Range)</option>
+                    <option value="low">Core i3 / Pentium / FX (Entry/Legacy)</option>
+                </select>
+
+                <div style="margin-top: 15px;">
+                    <label style="font-size: 0.7rem; font-weight: 800; color: var(--accent);">CHOOSE YOUR GPU</label>
+                    <select id="gpuSelect">
+                        <option value="450|high">RTX 4090 / 5090</option>
+                        <option value="250|high">RTX 3080 / RX 6800 XT</option>
+                        <option value="170|mid" selected>RTX 3060 / RX 6700 XT</option>
+                        <option value="120|low">GTX 1660S / RX 580</option>
                     </select>
                 </div>
 
-                <div class="input-group">
-                    <label>Select Motherboard</label>
-                    <select id="moboS">
-                        <optgroup label="AMD Boards">
-                            <option value="AM5">B650 / X670 (AM5)</option>
-                            <option value="AM4">B550 / B450 / A320 (AM4)</option>
-                            <option value="AM3">990FX / 970 / 760G (AM3+)</option>
-                        </optgroup>
-                        <optgroup label="Intel Boards">
-                            <option value="1700">Z790 / B760 / H610 (LGA 1700)</option>
-                            <option value="1200">Z590 / B560 / H410 (LGA 1200)</option>
-                            <option value="1151">Z390 / B360 / H110 (LGA 1151)</option>
-                            <option value="1155">Z77 / H61 (LGA 1155)</option>
-                            <option value="775">G41 / G31 / P45 (LGA 775)</option>
-                        </optgroup>
-                    </select>
-                </div>
+                <button class="btn" onclick="runAnalysis()">Analyze Build</button>
+                <div id="analysisResult" class="status-pill"></div>
+            </div>
 
-                <button class="btn" onclick="checkCompatibility()">Validate Match</button>
-                <div id="comp-result"></div>
+            <!-- QUICK TIPS -->
+            <div class="tool-card" style="background: linear-gradient(to bottom right, #1e293b, #0f172a);">
+                <h3 style="font-size: 1rem; color: var(--accent); margin-bottom: 10px;">Pro Tip</h3>
+                <p style="font-size: 0.8rem; color: var(--text-dim);">Always check if your Power Supply (PSU) has the required 8-pin connectors before buying used GPUs from local shops.</p>
             </div>
         </div>
 
     </div>
 </main>
 
-<!-- SIMPLE MODAL -->
+<!-- MODAL -->
 <div id="hwModal" class="modal" onclick="closeModal()">
     <div class="modal-content" onclick="event.stopPropagation()">
         <h2 id="mName"></h2>
-        <div id="mPrice" class="price" style="font-size: 2rem;"></div>
+        <div id="mPrice" class="price"></div>
         <p id="mDesc" style="margin: 20px 0; color: var(--text-dim);"></p>
-        <button class="btn" onclick="closeModal()">Back to Dashboard</button>
+        <button class="btn" onclick="closeModal()">Close Details</button>
     </div>
 </div>
 
 <script>
     const db = [
-        // MIXED NVIDIA & AMD
-        { n: "RTX 5090", p: 650000, b: "nvidia", c: "Pre-order", d: "Next-gen Blackwell titan. 32GB VRAM." },
-        { n: "RX 7900 XTX", p: 345000, b: "amd", c: "New", d: "24GB VRAM. AMD's current rasterization king." },
-        { n: "RTX 4090", p: 585000, b: "nvidia", c: "New", d: "The ultimate 4K and AI workstation card." },
-        { n: "RX 7800 XT", p: 165000, b: "amd", c: "New", d: "The 1440p value champion. Great VRAM." },
-        { n: "RTX 3060 12GB", p: 82000, b: "nvidia", c: "Used", d: "Most popular GPU in Pakistan. Huge VRAM for price." },
-        { n: "RX 6700 XT", p: 92000, b: "amd", c: "Used", d: "Excellent mid-range used card with 12GB memory." },
-        { n: "RTX 4060", p: 96000, b: "nvidia", c: "New", d: "The efficiency king. Great for 1080p Ultra." },
-        { n: "RX 6600", p: 62000, b: "amd", c: "Used", d: "Unbeatable budget 1080p card." },
-        { n: "GTX 1080 Ti", p: 75000, b: "nvidia", c: "Used", d: "The 11GB legend. Still solid for 1440p." },
-        { n: "RX 580 8GB", p: 25000, b: "amd", c: "Used", d: "The king of budget gaming in Pakistan." },
-        { n: "RTX 2060 Super", p: 68000, b: "nvidia", c: "Used", d: "Great used mid-range card with DLSS support." },
-        { n: "RX 5700 XT", p: 55000, b: "amd", c: "Used", d: "Strong 1080p performance, competes with RTX 3060." },
-        { n: "GTX 1660 Super", p: 48000, b: "nvidia", c: "Used", d: "Solid 1080p card for competitive games." },
-        { n: "RX 6800 XT", p: 135000, b: "amd", c: "Used", d: "High-end 1440p performer with 16GB VRAM." },
-        { n: "RTX 3070", p: 105000, b: "nvidia", c: "Used", d: "Perfect for high-refresh 1080p or 1440p." },
-        { n: "GTX 1060 6GB", p: 32000, b: "nvidia", c: "Used", d: "Reliable 1080p performance for budget builds." }
+        // GPUs
+        { n: "RTX 5090", p: 650000, b: "nvidia", c: "Pre-order", d: "32GB VRAM. 600W TDP. The future of gaming." },
+        { n: "RX 7900 XTX", p: 345000, b: "amd", c: "New", d: "24GB VRAM. AMD's flagship monster." },
+        { n: "RTX 4060", p: 96000, b: "nvidia", c: "New", d: "Ultra efficient 1080p card. 115W TDP." },
+        { n: "RX 6600", p: 62000, b: "amd", c: "Used", d: "Best value 1080p card in Pakistan." },
+        { n: "RTX 3060 12GB", p: 82000, b: "nvidia", c: "Used", d: "The legend. High VRAM for AI & Gaming." },
+        { n: "RX 580 8GB", p: 25000, b: "amd", c: "Used", d: "Budget king for local builds." },
+        // CPUs
+        { n: "Core i5 12400F", p: 34000, b: "intel", c: "New", d: "6 Cores / 12 Threads. Best mid-range CPU." },
+        { n: "Ryzen 5 5600", p: 28500, b: "amd", c: "New", d: "The AM4 hero. Great for budget gaming." },
+        { n: "Core i9 14900K", p: 185000, b: "intel", c: "New", d: "24 Cores of pure power. Needs a massive cooler." },
+        { n: "Ryzen 7 7800X3D", p: 115000, b: "amd", c: "New", d: "World's fastest gaming CPU. 3D V-Cache tech." },
+        { n: "Core i3 12100F", p: 24000, b: "intel", c: "New", d: "Entry level gaming beast. Beats older i7s." },
+        { n: "Core 2 Quad Q6600", p: 1500, b: "intel", c: "Legacy", d: "The ancient legend. For extreme budget builds." }
     ];
 
-    // SHUFFLE FUNCTION
-    function shuffleArray(array) {
+    function shuffle(array) {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]];
         }
     }
 
-    function renderCards(data) {
-        const container = document.getElementById('gpuContainer');
-        container.innerHTML = data.map(item => `
-            <div class="card" onclick="openModal('${item.n}')">
-                <div class="brand-line brand-${item.b}"></div>
-                <span class="condition">${item.c}</span>
-                <h3 style="margin-top:5px">${item.n}</h3>
-                <div class="price">Rs. ${item.p.toLocaleString()}</div>
-                <div style="font-size:0.75rem; color:var(--text-dim)">${item.b.toUpperCase()} Architecture</div>
+    function render(data) {
+        const grid = document.getElementById('hwGrid');
+        grid.innerHTML = data.map(i => `
+            <div class="card ${i.b}" onclick="openModal('${i.n}')">
+                <span class="tag">${i.c}</span>
+                <h3 style="margin-top:5px; font-size:1.1rem;">${i.n}</h3>
+                <div class="price">Rs. ${i.p.toLocaleString()}</div>
+                <div style="font-size:0.7rem; color:var(--text-dim); text-transform:uppercase;">${i.b} Architecture</div>
             </div>
         `).join('');
     }
 
-    function filterCards() {
+    function filterAll() {
         const q = document.getElementById('mainSearch').value.toLowerCase();
-        const filtered = db.filter(i => i.n.toLowerCase().includes(q));
-        renderCards(filtered);
+        render(db.filter(i => i.n.toLowerCase().includes(q)));
     }
 
-    function openModal(name) {
-        const item = db.find(i => i.n === name);
-        document.getElementById('mName').innerText = item.n;
-        document.getElementById('mPrice').innerText = "Rs. " + item.p.toLocaleString();
-        document.getElementById('mDesc').innerText = item.d;
-        document.getElementById('hwModal').style.display = 'block';
-    }
-
-    function closeModal() {
-        document.getElementById('hwModal').style.display = 'none';
-    }
-
-    function checkCompatibility() {
-        const cpu = document.getElementById('cpuS').value;
-        const mobo = document.getElementById('moboS').value;
-        const res = document.getElementById('comp-result');
+    function runAnalysis() {
+        const cpuTier = document.getElementById('cpuSelect').value;
+        const gpuData = document.getElementById('gpuSelect').value.split('|');
+        const gpuWatt = parseInt(gpuData[0]);
+        const gpuTier = gpuData[1];
+        const res = document.getElementById('analysisResult');
+        
         res.style.display = 'block';
-        if(cpu === mobo) {
-            res.style.background = 'rgba(16,185,129,0.1)';
-            res.style.color = '#10b981';
-            res.innerText = "✓ COMPATIBLE: Sockets match.";
-        } else {
-            res.style.background = 'rgba(239,68,68,0.1)';
+        
+        // PSU Calc
+        let psu = gpuWatt + 250;
+        let psuMsg = `Recommended PSU: ${psu}W+`;
+
+        // Bottleneck Logic
+        if (cpuTier === 'low' && gpuTier === 'high') {
+            res.style.background = 'rgba(239, 68, 68, 0.2)';
             res.style.color = '#ef4444';
-            res.innerText = "❌ INCOMPATIBLE: Socket mismatch.";
+            res.innerHTML = `⚠️ SEVERE BOTTLENECK!<br>${psuMsg}<br>Your CPU will slow down this GPU.`;
+        } else if (cpuTier === 'mid' && gpuTier === 'high') {
+            res.style.background = 'rgba(245, 158, 11, 0.2)';
+            res.style.color = '#f59e0b';
+            res.innerHTML = `⚠️ MODERATE BOTTLENECK<br>${psuMsg}<br>CPU might struggle in 4K.`;
+        } else {
+            res.style.background = 'rgba(16, 185, 129, 0.2)';
+            res.style.color = '#10b981';
+            res.innerHTML = `✅ GREAT MATCH!<br>${psuMsg}<br>Build is well balanced.`;
         }
     }
 
+    function openModal(n) {
+        const i = db.find(x => x.n === n);
+        document.getElementById('mName').innerText = i.n;
+        document.getElementById('mPrice').innerText = "Rs. " + i.p.toLocaleString();
+        document.getElementById('mDesc').innerText = i.d;
+        document.getElementById('hwModal').style.display = 'block';
+    }
+
+    function closeModal() { document.getElementById('hwModal').style.display = 'none'; }
+
     window.onload = () => {
-        shuffleArray(db); // Shuffle on load
-        renderCards(db);
+        shuffle(db);
+        render(db);
     };
 </script>
 
